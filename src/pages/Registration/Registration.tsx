@@ -16,12 +16,14 @@ export const Registration = () => {
   const [form] = Form.useForm();
   const { id } = useParams();
 
+  console.log(id);
+
   const onFinish = (values: Participant) => {
     console.log(values);
-    fetch("https://dummyjson.com/auth/login", {
+    fetch(`http://localhost:5000/api/events/register/${id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ values }),
+      body: JSON.stringify(values),
     });
   };
 
@@ -75,7 +77,7 @@ export const Registration = () => {
         </Form.Item>
 
         <Form.Item
-          name="whereHear"
+          name="referral"
           label="Where did you hear about this event?"
           rules={[
             {

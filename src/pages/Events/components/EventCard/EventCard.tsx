@@ -16,8 +16,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <p>{event.description}</p>
         <p>Date: {event.date}</p>
         <Space className={styles.links}>
-          <NavLink to={`/events/${event.id}/register`}>Register</NavLink>
-          <NavLink to={`/events/${event.id}`}>View</NavLink>
+          <NavLink to={`/events/${event._id}/register`}>Register</NavLink>
+          <NavLink to={`/events/${event._id}`}>View</NavLink>
         </Space>
       </div>
     </Card>

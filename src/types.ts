@@ -1,22 +1,34 @@
 export interface ListEvent {
-  id: number;
+  _id: number;
   title: string;
   description: string;
   organizer: string;
   date: Date;
-  participants: Participant[];
+}
+
+export interface metaEvents {
+  currentPage: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  pageCount: number;
+  pageSize: number;
+  totalEvents: number;
 }
 
 export interface EventsResponse {
-  limit: number;
-  products: ListEvent[];
-  skip: number;
-  total: number;
+  data: ListEvent[];
+  meta: metaEvents;
+}
+
+export interface EventParticipant {
+  _doc: ListEvent;
+  participants: Participant[];
 }
 
 export interface Participant {
+  _id: number;
   fullName: string;
   email: string;
   dateOfBirth: Date;
-  whereHear: string;
+  referral: string;
 }

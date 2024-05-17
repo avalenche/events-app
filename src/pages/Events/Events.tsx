@@ -1,5 +1,5 @@
 import { Pagination, Spin } from "antd";
-import { getListEvents } from "../../data";
+import { getLocalListEvents } from "../../data";
 import { useState } from "react";
 import { EventCard } from "./components";
 import { useQuery } from "@tanstack/react-query";
@@ -11,11 +11,10 @@ export const Events = () => {
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", pageSize, currentPage],
-    queryFn: () => getListEvents(pageSize, currentPage),
+    queryFn: () => getLocalListEvents(pageSize, currentPage),
   });
 
-  console.log("load", isLoading);
-  console.log("error", error);
+  console.log("Data", data);
 
   const handlePageSizeChange = (page: number, size: number) => {
     if (size !== pageSize) {
@@ -29,22 +28,22 @@ export const Events = () => {
   if (isLoading) return <Spin fullscreen />;
 
   return (
-    <>
+    <div className={styles.wrapper}>
       <h1>Events</h1>
       <div className={styles.card}>
-        {data?.products.map((event) => (
-          <EventCard key={event.id} event={event} />
+        {data?.data.map((event) => (
+          <EventCard key={event._id} event={event} />
         ))}
       </div>
       <Pagination
         className={styles.pagination}
-        total={data?.total}
+        total={data?.meta.pageCount}
         pageSize={pageSize}
         current={currentPage}
         onChange={handlePageSizeChange}
         showSizeChanger
         pageSizeOptions={["5", "10", "20"]}
       />
-    </>
+    </div>
   );
 };

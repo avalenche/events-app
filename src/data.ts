@@ -1,21 +1,22 @@
-import { EventsResponse, Participant } from "./types";
+import { EventParticipant, EventsResponse } from "./types";
 
-export const getListEvents = (
+export const getLocalListEvents = (
   pageSize: number,
   currentPage: number
 ): Promise<EventsResponse> =>
   fetch(
-    `https://dummyjson.com/products?limit=${pageSize}&skip=${
-      currentPage == 1 ? 0 : pageSize * currentPage
-    }`
-  ).then((res) => res.json());
+    `http://localhost:5000/api/events?pageSize=${pageSize}&currentPage=${currentPage}`
+  ).then((res) => {
+    if (!res.ok) {
+      throw new Error("Failed to fetch events");
+    }
+    return res.json();
+  });
 
-export const putParticipant = (
-  pageSize: number,
-  currentPage: number
-): Promise<Participant> =>
-  fetch(
-    `https://dummyjson.com/products?limit=${pageSize}&skip=${
-      currentPage == 1 ? 0 : pageSize * currentPage
-    }`
-  ).then((res) => res.json());
+export const getLocalEvent = (id: string): Promise<EventParticipant> =>
+  fetch(`http://localhost:5000/api/events/${id}`).then((res) => {
+    if (!res.ok) {
+      throw new Error("Failed to fetch events");
+    }
+    return res.json();
+  });

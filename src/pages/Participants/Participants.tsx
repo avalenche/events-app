@@ -1,52 +1,33 @@
-import { Pagination, Spin } from "antd";
-import { getListEvents } from "../../data";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { Spin } from "antd";
+
 import { ParticipantCard } from "./components/ParticipantCard";
+import { getLocalEvent } from "../../data";
 import styles from "./Participants.module.scss";
 
 export const Participants = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const { id } = useParams();
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", pageSize, currentPage],
-    queryFn: () => getListEvents(pageSize, currentPage),
+    queryKey: ["events"],
+    queryFn: () => getLocalEvent(id),
   });
-
-  console.log("load", isLoading);
-  console.log("error", error);
-
-  const handlePageSizeChange = (page: number, size: number) => {
-    if (size !== pageSize) {
-      setCurrentPage(1);
-      setPageSize(size);
-    } else {
-      setCurrentPage(page);
-    }
-  };
+  console.log("loading", isLoading);
+  console.log("data", data);
 
   if (isLoading) return <Spin fullscreen />;
 
   return (
-    <>
-      <h1>{`${data?.products} Participants`}</h1>
+    <div className={styles.wrapper}>
+      <h1>{`${data?._doc.title} Participants`}</h1>
       {
         <div className={styles.card}>
-          {data?.products.map((event) => (
-            <ParticipantCard key={event.id} event={event} />
+          {data?.participants.map((event) => (
+            <ParticipantCard key={event._id} event={event} />
           ))}
         </div>
       }
-      <Pagination
-        className={styles.pagination}
-        total={data?.total}
-        pageSize={pageSize}
-        current={currentPage}
-        onChange={handlePageSizeChange}
-        showSizeChanger
-        pageSizeOptions={["5", "10", "20"]}
-      />
-    </>
+    </div>
   );
 };
