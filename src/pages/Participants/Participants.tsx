@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Spin } from "antd";
 
 import { ParticipantCard } from "./components/ParticipantCard";
-import { getLocalEvent } from "../../data";
+import { getLocalEvent } from "../../api/eventsApi";
 import styles from "./Participants.module.scss";
 
 export const Participants = () => {

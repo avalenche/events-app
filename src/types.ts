@@ -32,3 +32,5 @@ export interface Participant {
   dateOfBirth: Date;
   referral: string;
 }
+
+export type NotificationType = "success" | "info" | "warning" | "error";

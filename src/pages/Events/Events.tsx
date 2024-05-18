@@ -1,5 +1,5 @@
 import { Pagination, Spin } from "antd";
-import { getLocalListEvents } from "../../data";
+import { getLocalListEvents } from "../../api/eventsApi";
 import { useState } from "react";
 import { EventCard } from "./components";
 import { useQuery } from "@tanstack/react-query";

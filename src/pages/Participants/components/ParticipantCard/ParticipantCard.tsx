@@ -8,6 +8,7 @@ interface PatrticipantCardProps {
 }
 
 export const ParticipantCard: React.FC<PatrticipantCardProps> = ({ event }) => {
+  console.log("Date event", typeof event.dateOfBirth);
   return (
     <Card className={styles.wrapper}>
       <p>Name: {event.fullName}</p>

@@ -1,7 +1,9 @@
-import { Button, DatePicker, Flex, Form, Input, Radio } from "antd";
+import { Button, DatePicker, Flex, Form, Input, Radio, message } from "antd";
 import styles from "./Registration.module.scss";
 import { Participant } from "../../types";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { registerParticipant } from "../../api/eventsApi";
+import { useMutation } from "@tanstack/react-query";
 
 const validateMessages = {
   required: "${label} is required!",
@@ -15,89 +17,98 @@ const validateMessages = {
 export const Registration = () => {
   const [form] = Form.useForm();
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  console.log(id);
+  const { mutate, isPending } = useMutation({
+    mutationFn: (participantData: Participant) =>
+      registerParticipant(participantData, id!),
+    onSuccess: () => {
+      message.success("Registration successful!");
+      form.resetFields();
+      navigate("/events");
+    },
+    onError: () => {
+      message.error("Registration failed. Please try again.");
+    },
+  });
 
   const onFinish = (values: Participant) => {
-    console.log(values);
-    fetch(`http://localhost:5000/api/events/register/${id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    mutate(values);
   };
 
   return (
-    <Flex justify="center">
-      <Form
-        form={form}
-        labelCol={{ span: 20 }}
-        layout="vertical"
-        className={styles.wrapper}
-        onFinish={onFinish}
-        validateMessages={validateMessages}
-      >
-        <h1>Event Registration</h1>
-        <Form.Item
-          label="Full name"
-          name="fullName"
-          rules={[
-            {
-              required: true,
-              type: "string",
-            },
-          ]}
+    <>
+      <Flex justify="center">
+        <Form
+          form={form}
+          labelCol={{ span: 20 }}
+          layout="vertical"
+          className={styles.wrapper}
+          onFinish={onFinish}
+          validateMessages={validateMessages}
         >
-          <Input />
-        </Form.Item>
+          <h1>Event Registration</h1>
+          <Form.Item
+            label="Full name"
+            name="fullName"
+            rules={[
+              {
+                required: true,
+                type: "string",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            {
-              required: true,
-              type: "email",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              {
+                required: true,
+                type: "email",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
 
-        <Form.Item
-          label="Date of birth"
-          name="dateOfBirth"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <DatePicker />
-        </Form.Item>
+          <Form.Item
+            label="Date of birth"
+            name="dateOfBirth"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <DatePicker />
+          </Form.Item>
 
-        <Form.Item
-          name="referral"
-          label="Where did you hear about this event?"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Radio.Group>
-            <Radio value="social">Social media</Radio>
-            <Radio value="friend">Friends</Radio>
-            <Radio value="myself">Found myself</Radio>
-          </Radio.Group>
-        </Form.Item>
+          <Form.Item
+            name="referral"
+            label="Where did you hear about this event?"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Radio.Group>
+              <Radio value="social">Social media</Radio>
+              <Radio value="friend">Friends</Radio>
+              <Radio value="myself">Found myself</Radio>
+            </Radio.Group>
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Register
-          </Button>
-        </Form.Item>
-      </Form>
-    </Flex>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={isPending}>
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+      </Flex>
+    </>
   );
 };

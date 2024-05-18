@@ -1,9 +1,10 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import { Events, Registration, Participants, ErrorPage } from "../pages";
 import { Layout } from "./Layout";
 
 export const routes = createBrowserRouter([
+  { path: "/", element: <Navigate to={"/events"} /> },
   {
     path: "/events",
     element: <Layout />,

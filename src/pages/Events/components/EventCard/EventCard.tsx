@@ -9,6 +9,8 @@ interface EventCardProps {
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const date2 = new Date();
+  console.log(date2.getDay());
   return (
     <Card title={event.title} className={styles.wrapper}>
       <div>
