@@ -1,11 +1,7 @@
+import { ApiClientOptions } from '../types';
 import { buildQueryString } from "../utils/queryString";
 
 const BASE_URL = "http://localhost:5000/api";
-
-interface ApiClientOptions extends RequestInit {
-  headers?: Record<string, string>;
-  params?: Record<string, any>;
-}
 
 const apiClient = async <T>(
   endpoint: string,

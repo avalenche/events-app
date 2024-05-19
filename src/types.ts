@@ -33,4 +33,9 @@ export interface Participant {
   referral: string;
 }
 
+export interface ApiClientOptions extends RequestInit {
+  headers?: Record<string, string>;
+  params?: Record<string, any>;
+}
+
 export type NotificationType = "success" | "info" | "warning" | "error";

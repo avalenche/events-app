@@ -1,18 +1,20 @@
 import React from "react";
 import { Card } from "antd";
+
 import { Participant } from "../../../../types";
 import styles from "./ParticipantCard.module.scss";
 
 interface PatrticipantCardProps {
-  event: Participant;
+  participant: Participant;
 }
 
-export const ParticipantCard: React.FC<PatrticipantCardProps> = ({ event }) => {
-  console.log("Date event", typeof event.dateOfBirth);
+export const ParticipantCard: React.FC<PatrticipantCardProps> = ({
+  participant,
+}) => {
   return (
     <Card className={styles.wrapper}>
-      <p>Name: {event.fullName}</p>
-      <p>Email: {event.email}</p>
+      <p>Name: {participant.fullName}</p>
+      <p>Email: {participant.email}</p>
     </Card>
   );
 };

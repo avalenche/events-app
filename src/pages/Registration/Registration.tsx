@@ -1,9 +1,10 @@
-import { Button, DatePicker, Flex, Form, Input, Radio, message } from "antd";
-import styles from "./Registration.module.scss";
-import { Participant } from "../../types";
-import { useParams, useNavigate } from "react-router-dom";
-import { registerParticipant } from "../../api/eventsApi";
 import { useMutation } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button, DatePicker, Flex, Form, Input, Radio, message } from "antd";
+
+import { registerParticipant } from "../../api/eventsApi";
+import { Participant } from "../../types";
+import styles from "./Registration.module.scss";
 
 const validateMessages = {
   required: "${label} is required!",
@@ -101,12 +102,26 @@ export const Registration = () => {
               <Radio value="myself">Found myself</Radio>
             </Radio.Group>
           </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isPending}>
-              Register
+          <Flex justify="space-around">
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={isPending}
+                className={styles.button}
+              >
+                Register
+              </Button>
+            </Form.Item>
+            <Button
+              type="primary"
+              htmlType="button"
+              className={styles.button}
+              onClick={() => navigate("/events")}
+            >
+              Cancel
             </Button>
-          </Form.Item>
+          </Flex>
         </Form>
       </Flex>
     </>

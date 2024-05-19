@@ -2,12 +2,14 @@ import { EventParticipant, EventsResponse, Participant } from "../types";
 import apiClient from "./apiClient";
 
 export const getLocalListEvents = (
-  pageSize: number,
-  currentPage: number
+  currentPage: number,
+  sortBy: string,
+  sortOrder: string
 ): Promise<EventsResponse> =>
-  apiClient<EventsResponse>(
-    `/events?pageSize=${pageSize}&currentPage=${currentPage}`
-  );
+  apiClient<EventsResponse>("/events", {
+    method: "GET",
+    params: { pageSize: 10, currentPage, sortBy, sortOrder },
+  });
 
 export const getLocalEvent = (id: string): Promise<EventParticipant> =>
   apiClient<EventParticipant>(`/events/${id}`);
@@ -16,7 +18,16 @@ export const registerParticipant = (
   values: Participant,
   eventId: string
 ): Promise<EventParticipant> =>
-  apiClient<EventParticipant>(`/events/register/${eventId}`, {
+  apiClient<EventParticipant>(`/participants/register/${eventId}`, {
     method: "POST",
     body: JSON.stringify(values),
+  });
+
+export const searchParticipants = (
+  eventId: string,
+  query: string
+): Promise<Participant[]> =>
+  apiClient<Participant[]>("/participants/search", {
+    method: "GET",
+    params: { eventId, query },
   });

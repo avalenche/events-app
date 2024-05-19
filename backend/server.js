@@ -11,7 +11,7 @@ app.use(cors()); // Enable CORS for all routes
 
 // Routes
 app.use("/api/events", require("./routes/events"));
-app.use("/api/events", require("./routes/participant"));
+app.use("/api/participants", require("./routes/participants"));
 
 // Connect to MongoDB
 mongoose

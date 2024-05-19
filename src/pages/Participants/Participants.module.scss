@@ -5,10 +5,20 @@
 .card {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   margin: 1rem;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
+}
+
+.a {
+  padding-right: 5px;
+  font-size: 1.5rem;
+}
+
+.h1 {
+  margin-bottom: 1rem;
 }

@@ -1,32 +1,43 @@
-// routes/events.js
 const express = require("express");
 const router = express.Router();
 
-// Event Model
+// Event & Participant Models
 const Event = require("../models/Event");
 const Participant = require("../models/Participant");
 
 // @route   GET api/events
-// @desc    Get all events
 router.get("/", async (req, res) => {
+  const {
+    pageSize = 10,
+    currentPage = 1,
+    sortBy = "title",
+    sortOrder = "asc",
+  } = req.query;
+
+  const sortOptions = {};
+  sortOptions[sortBy] = sortOrder;
   try {
-    const pageSize = parseInt(req.query.pageSize) || 10; // Default page size is 10 if not provided
-    const currentPage = parseInt(req.query.page) || 1; // Default current page is 1 if not provided
+    const pageSizeInt = parseInt(pageSize);
+    const currentPageInt = parseInt(currentPage);
 
     const skip = pageSize * (currentPage - 1);
 
-    const events = await Event.find().limit(pageSize).skip(skip).exec();
+    const events = await Event.find()
+      .sort(sortOptions)
+      .limit(pageSizeInt)
+      .skip(skip)
+      .exec();
 
     const itemCount = await Event.countDocuments();
 
-    const pageCount = Math.ceil(itemCount / pageSize);
+    const pageCount = Math.ceil(itemCount / pageSizeInt);
 
     const response = {
       meta: {
         totalEvents: itemCount,
         pageCount,
-        currentPage,
-        pageSize,
+        currentPage: currentPageInt,
+        pageSize: pageSizeInt,
         hasNextPage: currentPage < pageCount,
         hasPreviousPage: currentPage > 1,
       },
@@ -60,7 +71,5 @@ router.get("/:id", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-// Add more routes for CRUD operations as needed
 
 module.exports = router;
