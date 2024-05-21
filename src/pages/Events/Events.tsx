@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState, Fragment, useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Spin, Select, Flex, Radio, RadioChangeEvent } from "antd";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -12,18 +12,20 @@ const { Option } = Select;
 export const Events = () => {
   const [sortBy, setSortBy] = useState<string>("title");
   const [sortOrder, setSortOrder] = useState<string>("asc");
+  const eventsContainerRef = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["events", sortBy, sortOrder],
-    queryFn: ({ pageParam = 1 }) =>
-      getLocalListEvents(pageParam, sortBy, sortOrder),
-    getNextPageParam: (lastPage, allPages) => {
-      const maxPages = lastPage.meta.pageCount;
-      const nextPage = allPages.length + 1;
-      return nextPage <= maxPages ? nextPage : undefined;
-    },
-    initialPageParam: 1,
-  });
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["events", sortBy, sortOrder],
+      queryFn: ({ pageParam = 1 }) =>
+        getLocalListEvents(pageParam, sortBy, sortOrder),
+      getNextPageParam: (lastPage, allPages) => {
+        const maxPages = lastPage.meta.pageCount;
+        const nextPage = allPages.length + 1;
+        return nextPage <= maxPages ? nextPage : undefined;
+      },
+      initialPageParam: 1,
+    });
 
   const handleSortBy = (value: string) => {
     setSortBy(value);
@@ -32,6 +34,23 @@ export const Events = () => {
   const handleSortOrder = (e: RadioChangeEvent) => {
     setSortOrder(e.target.value);
   };
+
+  useEffect(() => {
+    const checkScroll = () => {
+      if (
+        eventsContainerRef.current &&
+        eventsContainerRef.current.clientHeight < window.innerHeight &&
+        hasNextPage &&
+        !isFetchingNextPage
+      ) {
+        fetchNextPage();
+      }
+    };
+
+    if (data && data.pages.length > 0) {
+      checkScroll();
+    }
+  }, [data, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading) return <Spin fullscreen />;
 
@@ -55,22 +74,23 @@ export const Events = () => {
           </Radio.Group>
         </div>
       </Flex>
-      <InfiniteScroll
-        dataLength={data?.pages[0].meta.totalEvents || 0}
-        next={fetchNextPage}
-        hasMore={!!hasNextPage}
-        loader={<Spin>Loading more...</Spin>}
-        endMessage={<p>No more events to load</p>}
-        className={styles.card}
-      >
-        {data?.pages.map((page, index) => (
-          <Fragment key={index}>
-            {page.data.map((event) => (
-              <EventCard key={event._id} event={event} />
-            ))}
-          </Fragment>
-        ))}
-      </InfiniteScroll>
+      <div ref={eventsContainerRef}>
+        <InfiniteScroll
+          dataLength={data?.pages[0].meta.totalEvents || 0}
+          next={fetchNextPage}
+          hasMore={!!hasNextPage}
+          loader={<Spin fullscreen>Loading more...</Spin>}
+          className={styles.card}
+        >
+          {data?.pages.map((page, index) => (
+            <Fragment key={index}>
+              {page.data.map((event) => (
+                <EventCard key={event._id} event={event} />
+              ))}
+            </Fragment>
+          ))}
+        </InfiniteScroll>
+      </div>
     </div>
   );
 };
