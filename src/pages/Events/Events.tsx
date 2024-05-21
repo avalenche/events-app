@@ -55,24 +55,22 @@ export const Events = () => {
           </Radio.Group>
         </div>
       </Flex>
-      <div className={styles.card}>
-        <InfiniteScroll
-          dataLength={data?.pages[0].meta.totalEvents || 0}
-          next={fetchNextPage}
-          hasMore={!!hasNextPage}
-          loader={<div>Loading more...</div>}
-          endMessage={<p>No more events to load</p>}
-          className={styles.wrapper}
-        >
-          {data?.pages.map((page, index) => (
-            <Fragment key={index}>
-              {page.data.map((event) => (
-                <EventCard key={event._id} event={event} />
-              ))}
-            </Fragment>
-          ))}
-        </InfiniteScroll>
-      </div>
+      <InfiniteScroll
+        dataLength={data?.pages[0].meta.totalEvents || 0}
+        next={fetchNextPage}
+        hasMore={!!hasNextPage}
+        loader={<Spin>Loading more...</Spin>}
+        endMessage={<p>No more events to load</p>}
+        className={styles.card}
+      >
+        {data?.pages.map((page, index) => (
+          <Fragment key={index}>
+            {page.data.map((event) => (
+              <EventCard key={event._id} event={event} />
+            ))}
+          </Fragment>
+        ))}
+      </InfiniteScroll>
     </div>
   );
 };
