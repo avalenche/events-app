@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { NavLink, useParams } from "react-router-dom";
 import { useState } from "react";
-import { Spin, Input, Flex } from "antd";
+import { Spin, Input, Flex, Empty } from "antd";
 import { RollbackOutlined } from "@ant-design/icons";
 
 import { ParticipantCard } from "./components/ParticipantCard";
@@ -34,6 +34,12 @@ export const Participants = () => {
     refetch();
   };
 
+  const participants =
+    searchQuery && participantsData
+      ? participantsData
+      : eventData?.participants;
+  console.log("participants", participants);
+
   if (eventLoading || participantsLoading) return <Spin fullscreen />;
 
   return (
@@ -52,19 +58,13 @@ export const Participants = () => {
         enterButton
       />
       <div className={styles.card}>
-        {searchQuery && participantsData
-          ? participantsData.map((participant) => (
-              <ParticipantCard
-                key={participant._id}
-                participant={participant}
-              />
-            ))
-          : eventData?.participants.map((participant) => (
-              <ParticipantCard
-                key={participant._id}
-                participant={participant}
-              />
-            ))}
+        {participants && participants.length > 0 ? (
+          participants.map((participant) => (
+            <ParticipantCard key={participant._id} participant={participant} />
+          ))
+        ) : (
+          <Empty description="No participants found" />
+        )}
       </div>
     </div>
   );
